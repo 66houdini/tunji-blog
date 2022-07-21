@@ -12,9 +12,9 @@ from functools import wraps
 import os
 
 app = Flask(__name__)
+url = os.environ.get('DATABASE_URL').replace("postgres://", "postgresql://", 1)
 app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY")
-# app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL').replace("://", "ql://", 1)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://ttqvlbrdafqcel:cb2575a8973355b90538e92b1bb49e7c76cb39b51a2d4836f58f16901b74529d@ec2-54-161-255-125.compute-1.amazonaws.com:5432/d6dvdk140ab3fk'
+app.config['SQLALCHEMY_DATABASE_URI'] = url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 ckeditor = CKEditor(app)
 Bootstrap(app)

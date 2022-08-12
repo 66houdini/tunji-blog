@@ -12,9 +12,8 @@ from functools import wraps
 import os
 
 app = Flask(__name__)
-url = os.environ.get('DATABASE_URL').replace("postgres://", "postgresql://", 1)
 app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY")
-app.config['SQLALCHEMY_DATABASE_URI'] = url
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_NEW_URL",  "sqlite:///blog.db")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 ckeditor = CKEditor(app)
 Bootstrap(app)
@@ -64,7 +63,7 @@ class BlogPost(db.Model):
     date = db.Column(db.String(250), nullable=False)
     body = db.Column(db.Text, nullable=False)
     img_url = db.Column(db.String(250), nullable=False)
-    comments = relationship("Comment", back_populates="parent_post")
+    comments_post = relationship("Comment", back_populates="parent_post")
 
 
 class Comment(db.Model):
@@ -73,8 +72,8 @@ class Comment(db.Model):
     author_id = db.Column(db.Integer, db.ForeignKey("users.id"))
     comment_author = relationship("User", back_populates="comments")
     post_id = db.Column(db.Integer, db.ForeignKey("blog_posts.id"))
-    parent_post = relationship("BlogPost", back_populates="comments")
-    comment = db.Column(db.Text, nullable=False)
+    parent_post = relationship("BlogPost", back_populates="comments_post")
+    text = db.Column(db.Text, nullable=False)
 
 
 @app.route('/')
@@ -150,7 +149,7 @@ def show_post(post_id):
             flash("You need to login or register to comment.")
             return redirect(url_for("login"))
         new_comment = Comment(
-            comment=form.comment.data,
+            text=form.comment.data,
             comment_author=current_user,
             parent_post=requested_post
         )

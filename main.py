@@ -11,6 +11,7 @@ from flask_gravatar import Gravatar
 from functools import wraps
 import os
 
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY")
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_NEW_URL",  "sqlite:///blog.db")
